@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Django Page</title>
+</head>
+<body>
+    <h1>Welcome to My First Website,Hello Django</h1>
+    <h2>登录界面</h2>
+    <form method="post" action="/login_action/">
+        <input name="username" type="text" placeholder="username" ><br>
+        <input name="password" type="password" placeholder="password" ><br>
+        <span class="error">{{error}}</span>
+        <br>
+        <input type="submit" value="登 录" class="btn" id="login_button">
+        {% csrf_token %}
+    </form>
+</body>
+</html>
