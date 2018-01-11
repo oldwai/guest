@@ -17,7 +17,7 @@ def isli(request):
     return render(request,'isli.html')
     #pass
 
-@login_required
+#@login_required
 def login_action(request):
     #return HttpResponse("哈哈哈哈哈登录成功了")
     if request.method == "POST":
@@ -72,28 +72,47 @@ def search_name(request):
     return render(request,'event_manage.html',{'user':username,'events':event_list})
 
 @login_required
-def sign_index(request,eid):
-    event = get_object_or_404(Event, id = eid)
-    return render(request,"sign_index.html",{'event':event})
+def sign_index(request, eid):
+    event = get_object_or_404(Event, id=eid)
+    guest_list = Guest.objects.filter(event_id=eid)           # 签到人数
+    sign_list = Guest.objects.filter(sign="1", event_id=eid)   # 已签到数
+    guest_data = str(len(guest_list))
+    sign_data = str(len(sign_list))
+    return render(request, 'sign_index.html', {'event': event,
+                                               'guest':guest_data,
+                                               'sign':sign_data})
 
 @login_required
 def sign_index_action(request,eid):
-    event = get_object_or_404(Event, id = eid)
+
+    event = get_object_or_404(Event, id=eid)
+    guest_list = Guest.objects.filter(event_id=eid)
+    sign_list = Guest.objects.filter(sign="1", event_id=eid)
+    guest_data = str(len(guest_list))
+    sign_data = str(len(sign_list))
+    print('______________________________',sign_data)
     phone = request.POST.get('phone','')
-    print(phone)
+
     result = Guest.objects.filter(phone=phone)
     if not result:
-        return render(request,'sign_index.html',{'event':event,'hint':'输入的手机号错误.'})
+        return render(request, 'sign_index.html', {'event': event,'hint': 'phone error.','guest':guest_data,'sign':sign_data})
 
-    result = Guest.objects.filter(phone=phone,event_id=eid)
+    result = Guest.objects.filter(phone = phone,event_id = eid)
     if not result:
-        return render(request,'sign_index.html',{'event':event,'hint':'与用户绑定的手机号不一致.'})
+        return render(request, 'sign_index.html', {'event': event,'hint': 'event id or phone error.','guest':guest_data,'sign':sign_data})
 
-    result = Guest.objects.get(phone=phone,event_id=eid)
+    result = Guest.objects.get(event_id = eid,phone = phone)
+
     if result.sign:
-        return render(request,'sign_index.html',{'event':event,'hint':'用户已签到.'})
+        return render(request, 'sign_index.html', {'event': event,'hint': "user has sign in.",'guest':guest_data,'sign':sign_data})
     else:
-        Guest.objects.filter(phone=phone,event_id=eid).update(sign='1')
-        return render(request,'sign_index.html',{'event':event,'hint':'签到成功','guest':result})
+        Guest.objects.filter(event_id = eid,phone = phone).update(sign = '1')
+        return render(request, 'sign_index.html', {'event': event,'hint':'sign in success!',
+            'user': result,
+            'guest':guest_data,
+            'sign':str(int(sign_data)+1)
+            })
 
 
+def ball(request):
+    return render(request,"ball.html")

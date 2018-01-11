@@ -19,9 +19,16 @@
             <li><a href="/event_manage/">发布会</a></li>
             <li><a href="/guest_manage/">嘉宾</a></li>
           </ul>
-         <!-- <ul class="nav navbar-nav navbar-right">
-           <li><a href="">已签到：{{sign}} | 嘉宾：{{guest}}</a></li>
-         </ul> -->
+         <ul class="nav navbar-nav navbar-right">
+             {% if not guest %}
+                 <li><a href="">已签到：0 | 嘉宾：0</a></li>
+             {% elif not sign  %}
+                 <li><a href="">已签到：0 | 嘉宾：{{guest}}</a></li>
+             {% else   %}
+                 <li><a href="">已签到：{{sign}} | 嘉宾：{{guest}}</a></li>
+             {% endif  %}
+
+         </ul>
         </div><!--/.nav-collapse -->
       </div>
     </nav>
